@@ -1,5 +1,5 @@
 
-from quaternion import *
+from .quaternion import *
 
 class QArray:
 

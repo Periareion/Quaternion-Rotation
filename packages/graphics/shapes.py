@@ -1,15 +1,15 @@
 
 import math
 
-from quaternion import *
-from qarray import *
+from ..qmath.quaternion import *
+from ..qmath.qarray import *
 
-from color import *
+from .color import *
 
 class Mesh:
 
     def __init__(self, root_position=(0,0,0)):
-        self.root_position = Q(0, *root_position)
+        self.root_position = Q(root_position)
 
 class Cuboid(Mesh):
 

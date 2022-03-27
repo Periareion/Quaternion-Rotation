@@ -1,6 +1,6 @@
 
-from quaternion import *
-from qarray import QArray
+from .quaternion import *
+from .qarray import QArray
 
 import pygame
 clock = pygame.time.Clock()

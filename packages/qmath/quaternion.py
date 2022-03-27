@@ -9,6 +9,8 @@ class Quaternion:
         # Support for making sure it is a quaternion (Q(q) = q if q already is a Quaternion)
         if isinstance(real, Quaternion):
             real, i, j, k = real.components
+        elif isinstance(real, (tuple, list)) and len(real) == 3:
+            real, i, j, k = 0, *real
 
         self.real = real
         self.i = i
@@ -204,7 +206,6 @@ class Quaternion:
             product *= norm**exponent
             return product
         elif isinstance(exponent, (float, int)):
-            print("Running test formula")
             norm = self.norm
             theta = math.acos(self.normalized.real)
             return norm**exponent * (cos(exponent*theta) + self.vector * sin(exponent*theta))

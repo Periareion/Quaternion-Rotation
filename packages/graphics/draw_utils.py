@@ -2,10 +2,10 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from quaternion import *
-from qarray import *
+from ..qmath.quaternion import *
+from ..qmath.qarray import *
 
-from color import *
+from .color import *
 
 def drop_vertex(position, color):
     glColor3fv(color)
