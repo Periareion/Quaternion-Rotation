@@ -1,10 +1,9 @@
 
 import math
 
-from ..qmath.quaternion import *
-from ..qmath.qarray import *
+from ..graphics import Color
 
-from .color import *
+from ..qmath import *
 
 class Mesh:
 

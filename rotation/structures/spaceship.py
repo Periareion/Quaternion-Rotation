@@ -4,15 +4,28 @@ from copy import deepcopy
 
 import pygame
 
-from ..graphics.shapes import *
 from ..graphics.draw_utils import *
 from ..graphics.color import *
 
-from packages.qmath.quaternion import *
-from packages.qmath.qarray import *
-from packages.qmath.vector import Vec
+from ..qmath import *
 
-from .rcs import *
+from .shapes import *
+
+class RCS(SquarePyramid):
+
+    def __init__(self, root_position=(0,0,0), direction=i, keys=None, thrust=36, size=(0.05,0.03,0.03), color=Color(10,10,10)):
+        super().__init__(root_position)
+        self.direction = direction
+        self.keys = keys
+        self.size = size
+        dimensional_morph = (self.size[0]*i, self.size[1]*j, self.size[2]*k)
+        self.QVertices = QArray(list([Q(0, *v).axis_transform(*dimensional_morph).axis_transform(direction, direction.axis_transform(j, k, i), direction.axis_transform(k, i, j)) for v in self.vertices]))
+        self.thrust_point = sum(self.QVertices[1:5])/3
+        self.mass = 10**-9
+        self.thrust = thrust
+        self.color = color
+        
+        self.active = False
 
 class Body:
 
@@ -77,17 +90,18 @@ class Body:
         self.mass = sum([part.mass for part in self.parts])
         self.center_of_mass = sum((part.root_position*(part.mass/self.mass) for part in self.parts))
 
-    def apply_force(self, position, direction, force, FPS=60):
+    def apply_force(self, position, direction, force, delta_time=1/60):
         force_vector = direction.normalized * force
-        self.velocity_vector += force_vector.axis_transform(*self.unit_vectors) / self.mass / FPS
+        self.velocity_vector += force_vector.axis_transform(*self.unit_vectors) / self.mass * delta_time
 
-        self.rotational_axis += (((position - self.center_of_mass)*force_vector).vector(True)).axis_transform(*self.unit_vectors) / self.mass / FPS
-        #arm = position - self.center_of_mass
-        #perpendicular_force = (arm*force_vector).vector(True)*arm
-        #angular_acceleration = perpendicular_force / arm / self.mass
-        #self.rotational_axis += angular_acceleration.axis_transform(*self.unit_vectors) / FPS
+        #self.rotational_axis += (((position - self.center_of_mass)*force_vector).vector(True)).axis_transform(*self.unit_vectors) / self.mass * delta_time
 
-    def update(self, FPS=60):
+        arm = position - self.center_of_mass
+        perpendicular_force = arm.inverse * (arm*force_vector).vector(True)
+        angular_acceleration = arm * perpendicular_force / self.mass
+        self.rotational_axis += angular_acceleration.axis_transform(*self.unit_vectors) * delta_time
+
+    def update(self, delta_time=1/60):
         key_presses = pygame.key.get_pressed()
         for part in self.parts:
             if isinstance(part, RCS):
@@ -103,8 +117,8 @@ class Body:
                 if part.active:
                     self.apply_force(part.root_position+part.thrust_point, -part.direction, part.thrust)
 
-        self.position = tuple((self.position[index]+(self.velocity_vector/FPS).components[1:4][index] for index in range(3)))
-        self.unit_vectors.rotate(self.rotational_axis, self.rotational_axis.norm / FPS)
+        self.position = tuple((self.position[index]+(self.velocity_vector*delta_time).components[1:4][index] for index in range(3)))
+        self.unit_vectors.rotate(self.rotational_axis, self.rotational_axis.norm*delta_time)
 
         self.draw()
 

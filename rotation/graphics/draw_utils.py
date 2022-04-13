@@ -35,25 +35,28 @@ class Polyhedron(MeshVertices):
     def __init__(self, mesh, parent_position=(0,0,0), unit_vectors=deepcopy(UNIT_QUATERNIONS)):
         super().__init__(mesh=mesh, parent_position=parent_position, unit_vectors=unit_vectors)
 
-    def render(self):
-        for face in self.mesh.faces:
-            match len(face):
-                case 3: glBegin(GL_TRIANGLES)
-                case 4: glBegin(GL_QUADS)
-                case _: continue
+    def render(self, faces=True, edges=False):
 
-            for vertex_index in face:
-                vertex = self.QVertices[vertex_index]
-                drop_vertex(vertex.vector(), self.mesh.color)
-            glEnd()
+        if faces:
+            for face in self.mesh.faces:
+                match len(face):
+                    case 3: glBegin(GL_TRIANGLES)
+                    case 4: glBegin(GL_QUADS)
+                    case _: continue
 
-        for edge in []:#self.mesh.edges:
-            vertex1 = self.QVertices[edge[0]].vector()
-            vertex2 = self.QVertices[edge[1]].vector()
-            draw_line(
-                vertex1,
-                vertex2,
-                Color(200,200,200), 2)
+                for vertex_index in face:
+                    vertex = self.QVertices[vertex_index]
+                    drop_vertex(vertex.vector(), self.mesh.color)
+                glEnd()
+
+        if edges:
+            for edge in self.mesh.edges:
+                vertex1 = self.QVertices[edge[0]].vector()
+                vertex2 = self.QVertices[edge[1]].vector()
+                draw_line(
+                    vertex1,
+                    vertex2,
+                    Color(200,200,200), 2)
 
 def draw_cube(cube, unit_vectors=deepcopy(UNIT_QUATERNIONS), parent_position=(0,0,0), filled_faces=True):
     QParent = Q(0, *parent_position)

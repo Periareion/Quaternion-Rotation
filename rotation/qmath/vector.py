@@ -4,8 +4,11 @@ import math
 class Vector:
 
     def __init__(self, *args, **kwargs):
-        if len(args) == 1 and isinstance(args[0], (list, tuple)):
-            elements = list(args[0])
+        if len(args) == 1:
+            if isinstance(args[0], (list, tuple, range)):
+                elements = list(args[0])
+            elif isinstance(args[0], (float, int)):
+                elements = [args[0]]
         else:
             elements = list(args)
 

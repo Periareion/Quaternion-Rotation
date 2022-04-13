@@ -8,27 +8,18 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from packages.graphics.shapes import *
-from packages.graphics.draw_utils import *
-from packages.graphics.color import *
+from rotation import *
 
-from packages.qmath.quaternion import *
-from packages.qmath.qarray import *
-from packages.qmath.vector import Vec
-
-from packages.spaceship.body import *
-
-def main():
-    
-    clock = pygame.time.Clock()
-    global FPS
-    FPS = 60
-
-    width, height = 800, 600
+def main(width=800, height=600, FPS=60):
 
     screen = pygame.display.set_mode((width, height), DOUBLEBUF|OPENGL)
     pygame.display.set_caption('You spin me right round')
     pygame.display.set_icon(pygame.image.load('icon.png'))
+
+    time = 0
+    delta_time = 1/FPS
+    
+    clock = pygame.time.Clock()
         
     gluPerspective(60, width/height, 0.1, 50.0)
     glTranslatef(0, 0, -3)
@@ -38,8 +29,8 @@ def main():
     glDepthFunc(GL_LESS)
     glEnable(GL_DEPTH_TEST)  
 
-    Thing = Body([0,0,0])
-    
+    cross_structure = Body([0,0,0])
+
     running = True
     while running:
 
@@ -50,9 +41,10 @@ def main():
         glClearColor(*Color(24, 24, 24), 1)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
-        Thing.update(FPS)
+        cross_structure.update(delta_time)
 
         pygame.display.flip()
+        time += delta_time
         clock.tick(FPS)
 
     pygame.quit()

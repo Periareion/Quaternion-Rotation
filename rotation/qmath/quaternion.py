@@ -153,7 +153,7 @@ class Quaternion:
 
     def __rtruediv__(self, other):
         if isinstance(other, (float, int)):
-            other = Q(other)/self
+            other = Q(other)
         if isinstance(other, Quaternion):
             return other/self
         else:
