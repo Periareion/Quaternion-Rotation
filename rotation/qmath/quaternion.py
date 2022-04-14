@@ -44,7 +44,9 @@ class Quaternion:
     # Returns normalized quaternion (whose norm = 1)
     @property
     def normalized(self):
-        return self/self.norm
+        if (norm := self.norm) == 0:
+            return self
+        return self/norm
 
     versor = normalized
 
@@ -168,9 +170,9 @@ class Quaternion:
             return NotImplemented
 
     def rotate(self, vector, angle):
-        norm = self.norm
-        q = math.cos(angle/2) + vector.vector(True, True)*math.sin(angle/2)
-        rotated = self.sandwich(q).normalized*norm
+        #norm = self.norm
+        q = math.cos(angle/2) + vector.normalized*math.sin(angle/2)
+        rotated = self.sandwich(q)#.normalized*norm
         self.update(rotated)
         return rotated
 
@@ -226,6 +228,9 @@ class Quaternion:
 
     def __repr__(self):
         return self.string #f'Q({self.real}, {self.i}, {self.j}, {self.k})'
+    
+    def copy(self):
+        return Q(*self.components)
 
 Q = Quaternion
 

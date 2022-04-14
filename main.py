@@ -10,7 +10,7 @@ from OpenGL.GLU import *
 
 from rotation import *
 
-def main(width=800, height=600, FPS=60):
+def main(width=1000, height=800, FPS=60):
 
     screen = pygame.display.set_mode((width, height), DOUBLEBUF|OPENGL)
     pygame.display.set_caption('You spin me right round')
@@ -22,14 +22,15 @@ def main(width=800, height=600, FPS=60):
     clock = pygame.time.Clock()
         
     gluPerspective(60, width/height, 0.1, 50.0)
-    glTranslatef(0, 0, -3)
-    glRotatef(-60, 1, 0, 0)
+    glTranslatef(0, 0, -4)
+    glRotatef(-70, 1, 0, 0)
     glRotatef(-30, 0, 0, 1)
 
     glDepthFunc(GL_LESS)
-    glEnable(GL_DEPTH_TEST)  
+    glEnable(GL_DEPTH_TEST)
 
-    cross_structure = Body([0,0,0])
+    cross_structure = Cross([0,0,0])
+    docking_port = Station([-3, 0, 0])
 
     running = True
     while running:
@@ -37,11 +38,15 @@ def main(width=800, height=600, FPS=60):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    cross_structure.randomize(True, True, True, True)
 
         glClearColor(*Color(24, 24, 24), 1)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
         cross_structure.update(delta_time)
+        docking_port.update(delta_time)
 
         pygame.display.flip()
         time += delta_time

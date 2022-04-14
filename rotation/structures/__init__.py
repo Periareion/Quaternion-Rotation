@@ -1,2 +1,1 @@
-
-from .spaceship import *
+from .crafts import *

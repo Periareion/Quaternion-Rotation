@@ -15,10 +15,10 @@ def draw_line(pos1, pos2, color, width=1):
     glLineWidth(GLfloat(width))
     glBegin(GL_LINES)
     drop_vertex(pos1, color)
-    drop_vertex(pos2, color) #tuple(x/2 for x in color)
+    drop_vertex(pos2, color)
     glEnd()
 
-from copy import copy, deepcopy
+from copy import deepcopy
 
 class MeshVertices:
 
@@ -33,6 +33,8 @@ class MeshVertices:
 class Polyhedron(MeshVertices):
 
     def __init__(self, mesh, parent_position=(0,0,0), unit_vectors=deepcopy(UNIT_QUATERNIONS)):
+        if isinstance(parent_position, Quaternion):
+            parent_position = parent_position.vector()
         super().__init__(mesh=mesh, parent_position=parent_position, unit_vectors=unit_vectors)
 
     def render(self, faces=True, edges=False):

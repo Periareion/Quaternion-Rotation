@@ -45,14 +45,7 @@ class QArray:
     def __repr__(self):
         return self.string
 
-UNIT_QUATERNIONS = QArray([Q(i=1), Q(j=1), Q(k=1)])
+    def copy(self):
+        return QArray([q.copy() for q in self.array])
 
-##a = QArray([Q(i=1),Q(k=1)])
-##
-##import time
-##from math import cos, sin, pi
-##
-##a = QArray([Quaternion(i=1), Q(j=1), Q(k=1)])
-##for n in range(360):
-##    a.rotate((i+j+k), pi/180)
-##    print(a)
+UNIT_QUATERNIONS = QArray([Q(i=1), Q(j=1), Q(k=1)])
