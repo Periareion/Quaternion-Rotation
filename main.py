@@ -30,10 +30,13 @@ def main(width=1000, height=800, FPS=60):
     glEnable(GL_DEPTH_TEST)
 
     cross_structure = Cross([0,0,0])
+    spaceship = Spaceship([0,0,0])
     docking_port = Station([-3, 0, 0])
 
     running = True
     while running:
+
+        key_presses = pygame.key.get_pressed()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -45,7 +48,8 @@ def main(width=1000, height=800, FPS=60):
         glClearColor(*Color(24, 24, 24), 1)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
-        cross_structure.update(delta_time)
+        cross_structure.update(delta_time, key_presses)
+        #spaceship.update(delta_time)
         docking_port.update(delta_time)
 
         pygame.display.flip()

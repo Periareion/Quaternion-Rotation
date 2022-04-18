@@ -29,8 +29,10 @@ class QArray:
         return QArray([other*q for q in self.array])
 
     def rotate(self, vector, angle):
-        for q in self.array:
-            q.rotate(vector, angle)
+        for i, q in enumerate(self.array):
+            self.array[i].rotate(vector, angle)
+        return self
+
 
     @property
     def string(self):
